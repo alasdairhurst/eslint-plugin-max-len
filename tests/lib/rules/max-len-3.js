@@ -329,7 +329,78 @@ ruleTester.run("max-len-3", rule, {
 								"</>)",
 						options: [33, { ignoreComments: true }],
 						parserOptions: { ecmaFeatures: { jsx: true } }
-				}
+				},
+				{
+					code: "'verylongliteralwhichgoesoverlimit'",
+					options: [33, { ignoreLongLiteral: true }]
+				},
+				{
+					code: "\"verylongliteralwhichgoesoverlimit\"",
+					options: [33, { ignoreLongLiteral: true }]
+				},
+				{
+					code: "`verylongliteralwhichgoesoverlimit`",
+					options: [33, { ignoreLongLiteral: true }]
+				},
+				{
+					code: "/verylongliteralwhichgoesoverlimit/",
+					options: [33, { ignoreLongLiteral: true }]
+				},
+				{
+					code: "				'verylongliteralwhichgoesoverlimit'",
+					options: [33, { ignoreLongLiteral: true }]
+				},
+				{
+					code: "				\"verylongliteralwhichgoesoverlimit\"",
+					options: [33, { ignoreLongLiteral: true }]
+				},
+				{
+					code: "        `verylongliteralwhichgoesoverlimit`",
+					options: [33, { ignoreLongLiteral: true }]
+				},
+				{
+					code: "        /verylongliteralwhichgoesoverlimit/",
+					options: [33, { ignoreLongLiteral: true }]
+				},
+				{
+					code: "logger.trace('verylongliteralwhichgoesoverlimit');",
+					options: [33, { ignoreLongLiteral: true }]
+				},
+				{
+					code: "a.b.verylongliteralwhichgoesoverlimit;",
+					options: [33, { ignoreLongLiteral: true }]
+				},
+				{
+					code: "shortFunction('verylongliteralwhichgoesoverlimit');",
+					options: [33, { ignoreLongLiteral: true }]
+				},
+				{
+					code: "		shortFunction('verylongliteralwhichgoesoverlimit');",
+					options: [33, { ignoreLongLiteral: true }]
+				},
+				{
+					code: "require('verylongliteralwhichgoesoverlimit')",
+					options: [33, { ignoreLongLiteral: true }]
+				},
+				{
+					code: "require('verylongliteralwhichgoesoverlimit');",
+					options: [33, { ignoreLongLiteral: true }]
+				},
+				{
+					code: "import 'verylongliteralwhichgoesoverlimit';",
+					options: [33, { ignoreLongLiteral: true }],
+					parserOptions: { sourceType: "module", ecmaVersion: 2015 }
+				},
+				// allow multiple ignore rules without having to write an overly complex regex
+				// 	/it\.should\(/
+				//  tap.test\(
+				//  require() <- already covered
+				//  import '' <- already covered
+				//
+				// {
+				// 	code: "		it.should('verylongliteralwhichgoesoverlimit', () => {);",
+				// 	options: [33, { ignoreLongLiteral: true }]
+				// },
 		],
 
 		invalid: [
