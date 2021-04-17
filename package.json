@@ -10,14 +10,13 @@
   "author": "Alasdair",
   "main": "lib/index.js",
   "scripts": {
-    "test": "node node_modules/mocha/bin/mocha tests --recursive"
+    "test": "mocha tests --recursive"
   },
   "dependencies": {
     "requireindex": "~1.1.0"
   },
   "devDependencies": {
-    "node": "8.16.0",
-    "eslint": "^3.0.0",
+    "eslint": "^7.0.0",
     "mocha": "^7.2.0"
   },
   "engines": {
