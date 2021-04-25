@@ -330,6 +330,7 @@ ruleTester.run("max-len-3", rule, {
 						options: [33, { ignoreComments: true }],
 						parserOptions: { ecmaFeatures: { jsx: true } }
 				},
+				// Allow single tokens
 				{
 					code: "'verylongliteralwhichgoesoverlimit'",
 					options: [33, { ignoreLongLiteral: true }]
@@ -340,12 +341,14 @@ ruleTester.run("max-len-3", rule, {
 				},
 				{
 					code: "`verylongliteralwhichgoesoverlimit`",
+					parserOptions,
 					options: [33, { ignoreLongLiteral: true }]
 				},
 				{
 					code: "/verylongliteralwhichgoesoverlimit/",
 					options: [33, { ignoreLongLiteral: true }]
 				},
+				// allow single tokens with leading spaces
 				{
 					code: "				'verylongliteralwhichgoesoverlimit'",
 					options: [33, { ignoreLongLiteral: true }]
@@ -356,12 +359,38 @@ ruleTester.run("max-len-3", rule, {
 				},
 				{
 					code: "        `verylongliteralwhichgoesoverlimit`",
+					parserOptions,
 					options: [33, { ignoreLongLiteral: true }]
 				},
 				{
 					code: "        /verylongliteralwhichgoesoverlimit/",
 					options: [33, { ignoreLongLiteral: true }]
 				},
+				// allow tokens with trailing semicolon
+				{
+					code: "'verylongliteralwhichgoesoverlimit';",
+					options: [33, { ignoreLongLiteral: true }]
+				},
+				{
+					code: "\"verylongliteralwhichgoesoverlimit\";",
+					options: [33, { ignoreLongLiteral: true }]
+				},
+				// allow tokens with trailing comma (array element, object key)
+				{
+					code: "[\n`verylongliteralwhichgoesoverlimit`,\n'secondline']",
+					parserOptions,
+					options: [33, { ignoreLongLiteral: true }]
+				},
+				{
+					code: "[\n/verylongliteralwhichgoesoverlimit/,\n'secondline']",
+					options: [33, { ignoreLongLiteral: true }]
+				},
+				{
+					code: "var a = {\n  'key': /verylongliteralwhichgoesoverlimit/,\n  'key2': 'secondline'\n}",
+					options: [33, { ignoreLongLiteral: true }]
+				},
+
+				// allow tokens with leading "prefix"
 				{
 					code: "logger.trace('verylongliteralwhichgoesoverlimit');",
 					options: [33, { ignoreLongLiteral: true }]
@@ -387,9 +416,66 @@ ruleTester.run("max-len-3", rule, {
 					options: [33, { ignoreLongLiteral: true }]
 				},
 				{
+					code: "throw new Error('verylongliteralwhichgoesoverlimit');",
+					options: [33, { ignoreLongLiteral: true }]
+				},
+				// odd but allowed variants
+				{
+					code: "var array = [\n'verylongliteralwhichgoesoverlimit'];",
+					options: [33, { ignoreLongLiteral: true }]
+				},
+				{
+					code: "require(\n'verylongliteralwhichgoesoverlimit');",
+					options: [33, { ignoreLongLiteral: true }]
+				},
+				{
 					code: "import 'verylongliteralwhichgoesoverlimit';",
 					options: [33, { ignoreLongLiteral: true }],
 					parserOptions: { sourceType: "module", ecmaVersion: 2015 }
+				},
+				{
+					code: "{\nkey: /verylongliteralwhichgoesoverlimit/\n}",
+					options: [33, { ignoreLongLiteral: true }]
+				},
+				{
+					code: "{\n\tkey: /verylongliteralwhichgoesoverlimit/\n}",
+					options: [33, { ignoreLongLiteral: true }]
+				},
+				{
+					code: "`verylong\\\nliteralwhichgoesovermultiplelines\\\nandthelimit`",
+					parserOptions,
+					options: [30, { ignoreLongLiteral: true }]
+				},
+				// test longLiteralPrefixChars
+				{
+					code: "a.b.verylongliteralwhichgoesoverlimit;",
+					options: [33, { ignoreLongLiteral: true, longLiteralPrefixChars: 5 }]
+				},
+				// whitespace is ignored
+				{
+					code: "          a.b.verylongliteralwhichgoesoverlimit;",
+					options: [33, { ignoreLongLiteral: true, longLiteralPrefixChars: 5 }]
+				},
+				// trailing comments are also ignored alongside long literals
+				{
+					code: "a.b.verylongliteralwhichgoesoverlimit; // really long trailing comment",
+					options: [33, { ignoreLongLiteral: true, ignoreTrailingComments: true }]
+				},
+				// comment trailing inside template string
+				{
+					code: "`verylongliteralwhichgoesoverlimit ${ // really long trailing comment\n''}`;",
+					options: [33, { ignoreLongLiteral: true, ignoreTrailingComments: true }],
+					parserOptions
+				},
+				// template where the end is in a middle line of the token
+				{
+					code: "`short\\\nverylongliteralwhichgoesoverlimit2\\\nshort`",
+					options: [33, { ignoreLongLiteral: true }],
+					parserOptions,
+				},
+				{
+					code: "",
+					options: [33, { ignoreLongLiteral: true }]
 				},
 				// allow multiple ignore rules without having to write an overly complex regex
 				// 	/it\.should\(/
@@ -1280,6 +1366,198 @@ ruleTester.run("max-len-3", rule, {
 										endColumn: 32
 								}
 						]
-				}
+				},
+				// disallow with other trailing characters
+				{
+					code: "function test() {\n`verylongliteralwhichgoesoverlimit`;}",
+					parserOptions,
+					options: [33, { ignoreLongLiteral: true }],
+					errors: [
+						{
+								messageId: "max",
+								data: { lineLength: 37, maxLength: 33 },
+								type: "Program",
+								line: 2,
+								column: 1,
+								endLine: 2,
+								endColumn: 38
+						}
+					]
+				},
+
+				// disallow tokens with leading "prefix" longer than allowed value
+				{
+					code: "logger.longFunctionName('verylongliteralwhichgoesoverlimit');",
+					options: [33, { ignoreLongLiteral: true }],
+					errors: [
+						{
+								messageId: "max",
+								data: { lineLength: 61, maxLength: 33 },
+								type: "Program",
+								line: 1,
+								column: 1,
+								endLine: 1,
+								endColumn: 62
+						}
+					]
+				},
+				{
+					code: "a.b.aLongLiteral.verylongliteralwhichgoesoverlimit;",
+					options: [33, { ignoreLongLiteral: true }],
+					errors: [
+						{
+								messageId: "max",
+								data: { lineLength: 51, maxLength: 33 },
+								type: "Program",
+								line: 1,
+								column: 1,
+								endLine: 1,
+								endColumn: 52
+						}
+					]
+				},
+				{
+					code: "a.b.aLongLiteral.verylongliteralwhichgoesoverlimit",
+					options: [33, { ignoreLongLiteral: true }],
+					errors: [
+						{
+								messageId: "max",
+								data: { lineLength: 50, maxLength: 33 },
+								type: "Program",
+								line: 1,
+								column: 1,
+								endLine: 1,
+								endColumn: 51
+						}
+					]
+				},
+				{
+					code: "func('verylongliteralwhichgoesoverlimit');",
+					options: [33, { ignoreLongLiteral: true, longLiteralPrefixChars: 3 }],
+					errors: [
+						{
+								messageId: "max",
+								data: { lineLength: 42, maxLength: 33 },
+								type: "Program",
+								line: 1,
+								column: 1,
+								endLine: 1,
+								endColumn: 43
+						}
+					]
+				},
+				{
+					code: "    func('verylongliteralwhichgoesoverlimit');",
+					options: [33, { ignoreLongLiteral: true, longLiteralPrefixChars: 3 }],
+					errors: [
+						{
+								messageId: "max",
+								data: { lineLength: 46, maxLength: 33 },
+								type: "Program",
+								line: 1,
+								column: 1,
+								endLine: 1,
+								endColumn: 47
+						}
+					]
+				},
+				{
+					code: "{\nkey: /verylongliteralwhichgoesoverlimit/\n}",
+					options: [33, { ignoreLongLiteral: true, longLiteralPrefixChars: 3 }],
+					errors: [
+						{
+								messageId: "max",
+								data: { lineLength: 40, maxLength: 33 },
+								type: "Program",
+								line: 2,
+								column: 1,
+								endLine: 2,
+								endColumn: 41
+						}
+					]
+				},
+				// arguably should be valid
+				{
+					code: "small; /* really really really really long inner comment */ small;",
+					options: [33, { ignoreLongLiteral: true, ignoreComments: true }],
+					errors: [
+						{
+								messageId: "max",
+								data: { lineLength: 66, maxLength: 33 },
+								type: "Program",
+								line: 1,
+								column: 1,
+								endLine: 1,
+								endColumn: 67
+						}
+					]
+				},
+				// trailing comments contribute to length
+				{
+					code: "a.b.verylongliteralwhichgoesoverlimit; // really really long trailing comment",
+					options: [33, { ignoreLongLiteral: true }],
+					errors: [
+						{
+								messageId: "max",
+								data: { lineLength: 44, maxLength: 33 },
+								type: "Program",
+								line: 1,
+								column: 1,
+								endLine: 1,
+								endColumn: 78
+						}
+					]
+				},
+				// comment inside template string
+				{
+					code: "`verylongliteralwhichgoesoverlimit${ // really really long trailing comment\n''}`;",
+					options: [33, { ignoreLongLiteral: true }],
+					parserOptions,
+					errors: [
+						{
+								messageId: "max",
+								data: { lineLength: 39, maxLength: 33 },
+								type: "Program",
+								line: 1,
+								column: 1,
+								endLine: 1,
+								endColumn: 76
+						}
+					]
+				},
+				// template where the end is on the last line of the token
+				{
+					code: "`verylong\\\nliteralwhichgoesovermultiplelinesandthelimit`.foobar",
+					options: [15, { ignoreLongLiteral: true }],
+					parserOptions,
+					errors: [
+						{
+								messageId: "max",
+								data: { lineLength: 52, maxLength: 15 },
+								type: "Program",
+								line: 2,
+								column: 1,
+								endLine: 2,
+								endColumn: 53
+						}
+					]
+				},
+				// line full of short tokens
+				{
+					code: "'a' + 'b' + 'c' + 'd' + 'e' + 'f' + 'g'",
+					options: [33, { ignoreLongLiteral: true }],
+					parserOptions,
+					errors: [
+						{
+								messageId: "max",
+								data: { lineLength: 39, maxLength: 33 },
+								type: "Program",
+								line: 1,
+								column: 1,
+								endLine: 1,
+								endColumn: 40
+						}
+					]
+				},
 		]
 });
