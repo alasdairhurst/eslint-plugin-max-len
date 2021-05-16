@@ -1,5 +1,5 @@
 {
-  "name": "eslint-plugin-max-len-3",
+  "name": "@alasdair/eslint-plugin-max-len",
   "version": "1.0.0",
   "description": "Alternative implementation of max-len allowing for more exceptions to the rule",
   "keywords": [

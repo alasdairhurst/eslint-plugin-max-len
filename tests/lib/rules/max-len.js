@@ -1,5 +1,5 @@
 /**
-* @fileoverview Tests for max-len-3 rule.
+* @fileoverview Tests for max-len rule.
 * @author Alasdair Hurst
 */
 
@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------
 // Requirements
 //------------------------------------------------------------------------------
-const rule = require("../../../lib/rules/max-len-3"),
+const rule = require("../../../lib/rules/max-len"),
 		{ RuleTester } = require("eslint");
 
 //------------------------------------------------------------------------------
@@ -19,7 +19,7 @@ const parserOptions = { ecmaVersion: 6 };
 
 const ruleTester = new RuleTester();
 
-ruleTester.run("max-len-3", rule, {
+ruleTester.run("max-len", rule, {
 		valid: [
 				"var x = 5;\nvar x = 2;",
 				{

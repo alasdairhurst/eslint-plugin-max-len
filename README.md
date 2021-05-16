@@ -1,4 +1,4 @@
-# eslint-plugin-max-len-3
+# @alasdair/eslint-plugin-max-len
 
 Alternative implementation of max-len allowing for more exceptions to the rule
 
@@ -10,21 +10,21 @@ You'll first need to install [ESLint](http://eslint.org):
 $ npm i eslint --save-dev
 ```
 
-Next, install `eslint-plugin-max-len-3`:
+Next, install `@alasdair/eslint-plugin-max-len`:
 
 ```
-$ npm install eslint-plugin-max-len-3 --save-dev
+$ npm install @alasdair/eslint-plugin-max-len --save-dev
 ```
 
 
 ## Usage
 
-Add `max-len-3` to the plugins section of your `.eslintrc` configuration file. You can omit the `eslint-plugin-` prefix:
+Add `@alasdair/max-len` to the plugins section of your `.eslintrc` configuration file. You can omit the `eslint-plugin-` prefix:
 
 ```json
 {
     "plugins": [
-        "max-len-3"
+        "@alasdair/max-len"
     ]
 }
 ```
@@ -34,7 +34,7 @@ Then configure the rules you want to use under the rules section.
 ```json
 {
     "rules": {
-        "max-len-3/max-len-3": ["error", 80]
+        "@alasdair/max-len/max-len": ["error", 80]
     }
 }
 ```
@@ -42,7 +42,7 @@ Then configure the rules you want to use under the rules section.
 ```json
 {
     "rules": {
-        "max-len-3/max-len-3": ["error", {
+        "@alasdair/max-len/max-len": ["error", {
             "ignoreLongLiteral": true
         }]
     }
@@ -52,7 +52,7 @@ Then configure the rules you want to use under the rules section.
 ```json
 {
     "rules": {
-        "max-len-3/max-len-3": ["error", {
+        "@alasdair/max-len/max-len": ["error", {
             "ignoreLongLiteral": true,
             "longLiteralPrefixChars": 16
         }]
@@ -61,7 +61,7 @@ Then configure the rules you want to use under the rules section.
 ```
 
 ## Supported Rules
-max-len-3/max-len-3
+@alasdair/max-len/max-len
 
 ### Options
 This rule has a number or object option:
