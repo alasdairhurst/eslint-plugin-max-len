@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-max-len-3",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Alternative implementation of max-len allowing for more exceptions to the rule",
   "keywords": [
     "eslint",
@@ -10,17 +10,19 @@
   "author": "Alasdair",
   "main": "lib/index.js",
   "scripts": {
+    "build": "check-engines && npm test",
     "test": "mocha tests --recursive"
   },
   "dependencies": {
     "requireindex": "~1.1.0"
   },
   "devDependencies": {
+    "@alasdair/check-engines": "^1.0.0",
     "eslint": "^7.0.0",
     "mocha": "^7.2.0"
   },
   "engines": {
-    "node": ">=0.10.0"
+    "node": ">=13.0.0"
   },
   "license": "ISC"
 }

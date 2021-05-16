@@ -63,8 +63,14 @@ ruleTester.run("max-len-3", rule, {
 						code: "foo('http://example.com/this/is/?a=longish&url=in#here');",
 						options: [40, 4, { ignoreUrls: true }]
 				}, {
-						code: "foo(bar(bazz('this is a long'), 'line of'), 'stuff');",
-						options: [40, 4, { ignorePattern: "foo.+bazz\\(" }]
+					code: "foo(bar(bazz('this is a long'), 'line of'), 'stuff');",
+					options: [40, 4, { ignorePattern: "foo.+bazz\\(" }]
+				}, {
+					code: "foo(bar(bazz('this is a long'), 'line of'), 'stuff');",
+					options: [40, 4, { ignorePattern: ["foo.+bazz\\("] }]
+				}, {
+					code: "foo(bar(bazz('this is a long'), 'line of'), 'stuff');",
+					options: [40, 4, { ignorePattern: ["something", "foo.+bazz\\("] }]
 				}, {
 						code:
 								"/* hey there! this is a multiline\n" +
@@ -574,10 +580,27 @@ ruleTester.run("max-len-3", rule, {
 						]
 				},
 				{
+					code:
+							"var foobar = 'this line isn\\'t matched by the regexp';\n" +
+							"var fizzbuzz = 'but this one is matched by the regexp';\n",
+					options: [20, 4, { ignorePattern: "fizzbuzz" }],
+					errors: [
+							{
+									messageId: "max",
+									data: { lineLength: 54, maxLength: 20 },
+									type: "Program",
+									line: 1,
+									column: 1,
+									endLine: 1,
+									endColumn: 55
+							}
+					]
+				}, {
 						code:
 								"var foobar = 'this line isn\\'t matched by the regexp';\n" +
-								"var fizzbuzz = 'but this one is matched by the regexp';\n",
-						options: [20, 4, { ignorePattern: "fizzbuzz" }],
+								"var fizzbuzz = 'but this one is matched by the regexp';\n" +
+								"var moonystar = 'but this one is matched by the regexp';\n",
+						options: [20, 4, { ignorePattern: ["fizzbuzz", "moon.*star"] }],
 						errors: [
 								{
 										messageId: "max",
@@ -589,8 +612,8 @@ ruleTester.run("max-len-3", rule, {
 										endColumn: 55
 								}
 						]
-				},
-				{
+					},
+					{
 						code: "var longLine = 'will trigger'; // even with a comment",
 						options: [10, 4, { ignoreComments: true }],
 						errors: [
