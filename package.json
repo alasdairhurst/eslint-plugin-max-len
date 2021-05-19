@@ -1,6 +1,6 @@
 {
   "name": "@alasdair/eslint-plugin-max-len",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Alternative implementation of max-len allowing for more exceptions to the rule",
   "keywords": [
     "eslint",

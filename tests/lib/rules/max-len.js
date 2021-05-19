@@ -18,10 +18,76 @@ const rule = require("../../../lib/rules/max-len"),
 const parserOptions = { ecmaVersion: 6 };
 
 const ruleTester = new RuleTester();
+// ruleTester.run("max-len", rule, {
+// 	valid: [
+// 		{
+// 			code: "				console.log(`Trying to ${'use'.lots.of.tokens} ${'in'.a.template}...`);",
+// 			options: [{
+// 				"ignoreLongLiteral": true,
+// 				"longLiteralPrefixChars": 16,
+// 				"treatTemplateAsOneLiteral": true
+// 			}],
+// 			parserOptions: { ecmaVersion: 2015 },
+// 		}
+// 	], 
+// 	invalid: [
+// 		{
+// 			code: "				console.log(`Trying to ${'use'.lots.of.tokens} ${'in'.a.template}...`);",
+// 			options: [{
+// 				"ignoreLongLiteral": true,
+// 				"longLiteralPrefixChars": 16,
+// 				"treatTemplateAsOneLiteral": true,
+// 				templateExpressionChars: 10
+// 			}],
+// 			parserOptions: { ecmaVersion: 2015 },
+// 			errors: [
+// 				{
+// 						messageId: "max",
+// 						data: { lineLength: 87, maxLength: 80 },
+// 						type: "Program",
+// 						line: 1,
+// 						column: 1,
+// 						endLine: 1,
+// 						endColumn: 76
+// 				}
+// 			]
+// 		}
+// 	]
+// });
+
+// return;
 
 ruleTester.run("max-len", rule, {
 		valid: [
 				"var x = 5;\nvar x = 2;",
+				{
+					code: "				console.log(`Trying to ${'use'.lots.of.tokens} ${'in'.a.template}...`);",
+					options: [{
+						"ignoreLongLiteral": true,
+						"longLiteralPrefixChars": 16,
+						"treatTemplateAsOneLiteral": true
+					}],
+					parserOptions: { ecmaVersion: 2015 },
+				},
+				{
+					code: "				console.log(`Trying to connect to running service on http://${hostname}:${port}...`);",
+					options: [{
+						"ignoreLongLiteral": true,
+						"longLiteralPrefixChars": 16,
+						"treatTemplateAsOneLiteral": true
+					}],
+					parserOptions: { ecmaVersion: 2015 }
+				},
+				{
+					code: "				console.log(`Trying to ${`inner template literal which is long`}...`);",
+					options: [{
+						"ignoreLongLiteral": true,
+						"longLiteralPrefixChars": 16,
+						"treatTemplateAsOneLiteral": true,
+						templateExpressionChars: 40
+					}],
+					parserOptions: { ecmaVersion: 2015 },
+				},
 				{
 						code: "var x = 5;\nvar x = 2;",
 						options: [80, 4]
@@ -1582,5 +1648,68 @@ ruleTester.run("max-len", rule, {
 						}
 					]
 				},
+				// template literal with inner tokens
+				{
+					code: "				console.log(`Trying to connect to running service on http://${hostname}:${port}...`);",
+					options: [{
+						"ignoreLongLiteral": true,
+						"longLiteralPrefixChars": 16,
+						"treatTemplateAsOneLiteral": false
+					}],
+					parserOptions: { ecmaVersion: 2015 },
+					errors: [
+						{
+								messageId: "max",
+								data: { lineLength: 101, maxLength: 80 },
+								type: "Program",
+								line: 1,
+								column: 1,
+								endLine: 1,
+								endColumn: 90
+						}
+					]
+				},
+				// template literal with inner template literal
+				{
+					code: "				console.log(`Trying to ${`inner template literal which is long`}...`);",
+					options: [{
+						"ignoreLongLiteral": true,
+						"longLiteralPrefixChars": 16,
+						"treatTemplateAsOneLiteral": false,
+					}],
+					parserOptions: { ecmaVersion: 2015 },
+					errors: [
+						{
+								messageId: "max",
+								data: { lineLength: 86, maxLength: 80 },
+								type: "Program",
+								line: 1,
+								column: 1,
+								endLine: 1,
+								endColumn: 75
+						}
+					]
+				},
+				{
+					code: "				console.log(`Trying to ${'use'.lots.of.tokens} ${'in'.a.template}...`);",
+					options: [{
+						"ignoreLongLiteral": true,
+						"longLiteralPrefixChars": 16,
+						"treatTemplateAsOneLiteral": true,
+						templateExpressionChars: 10
+					}],
+					parserOptions: { ecmaVersion: 2015 },
+					errors: [
+						{
+								messageId: "max",
+								data: { lineLength: 87, maxLength: 80 },
+								type: "Program",
+								line: 1,
+								column: 1,
+								endLine: 1,
+								endColumn: 76
+						}
+					]
+				}
 		]
 });
